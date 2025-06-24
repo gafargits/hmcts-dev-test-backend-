@@ -6,4 +6,5 @@ import uk.gov.hmcts.reform.dev.entity.TaskEntity;
 
 @Repository
 public interface TaskRepository extends JpaRepository<TaskEntity, Integer> {
+    boolean existsByTitleAndCaseworkerId(String title, Integer caseworkerId);
 }

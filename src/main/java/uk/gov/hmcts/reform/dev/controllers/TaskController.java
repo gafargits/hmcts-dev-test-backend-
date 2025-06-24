@@ -22,20 +22,12 @@ import static org.springframework.http.ResponseEntity.ok;
 public class TaskController {
 
     private final TaskService taskService;
-    @Autowired
     public TaskController(TaskService taskService) {
         this.taskService = taskService;
     }
 
-    @GetMapping(value = "/get-example-case", produces = "application/json")
-    public ResponseEntity<Task> getExampleCase() {
-        return ok(new Task(1, "ABC12345",
-                           "Case Description", "Case Status", LocalDate.now(), LocalDateTime.now()
-        ));
-    }
-
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody @Valid CreateTaskRequest request) {
+    public ResponseEntity<Task> createTask(@Valid @RequestBody CreateTaskRequest request) {
         Task createdTask = taskService.createTask(request);
         URI taskLocation = URI.create("/task/" + createdTask.getId());
         return ResponseEntity.created(taskLocation).body(createdTask);

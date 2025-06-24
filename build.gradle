@@ -159,6 +159,8 @@ dependencies {
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '11.8.2'
   implementation group: 'org.flywaydb', name: 'flyway-database-postgresql'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+  implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.2'
+  implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '8.0.2.Final'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.9'
 
