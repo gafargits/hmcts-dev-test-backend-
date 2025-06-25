@@ -26,13 +26,13 @@ public class TaskService {
 
     public Task createTask(CreateTaskRequest request) {
         boolean exists = taskRepository.existsByTitleAndCaseworkerId(request.getTitle(), request.getCaseworkerId());
-        if(exists) {
+        if (exists) {
             throw new IllegalArgumentException("Task with this title already exists for this caseworker.");
         }
         CaseworkerEntity caseworker = caseworkerRepository.findById(request.getCaseworkerId())
             .orElseThrow(() -> new IllegalArgumentException("Caseworker not found."));
 
-        if(request.getDueDate().isBefore(LocalDate.now())) {
+        if (request.getDueDate().isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Due date cannot be in the past.");
         }
         TaskStatus.findStatus(request.getStatus()); //validate status
@@ -42,11 +42,11 @@ public class TaskService {
 
     public Task findTaskById(int id) {
         TaskEntity entity = taskRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Task with ID " +id+ " NOT FOUND!"));
+            .orElseThrow(() -> new EntityNotFoundException("Task with ID " + id + " NOT FOUND!"));
         return toTaskModel(entity);
     }
 
-    public List<Task> findAllTasks () {
+    public List<Task> findAllTasks() {
         return taskRepository.findAll()
             .stream().map(this::toTaskModel)
             .collect(Collectors.toList());
@@ -58,11 +58,21 @@ public class TaskService {
             .orElseThrow(() -> new IllegalArgumentException("Caseworker not found."));
         TaskEntity entity = taskRepository.findById(id)
             .map(task -> {
-                if (Objects.nonNull(updatedTask.getStatus())) task.setStatus(updatedTask.getStatus());
-                if (Objects.nonNull(updatedTask.getDescription())) task.setDescription(updatedTask.getDescription());
-                if (Objects.nonNull(updatedTask.getTitle())) task.setTitle(updatedTask.getTitle());
-                if(Objects.nonNull(updatedTask.getDueDate())) task.setDueDate(updatedTask.getDueDate());
-                if(Objects.nonNull(updatedTask.getCaseworkerId())) task.setCaseworker(caseworker);
+                if (Objects.nonNull(updatedTask.getStatus())) {
+                    task.setStatus(updatedTask.getStatus());
+                }
+                if (Objects.nonNull(updatedTask.getDescription())) {
+                    task.setDescription(updatedTask.getDescription());
+                }
+                if (Objects.nonNull(updatedTask.getTitle())) {
+                    task.setTitle(updatedTask.getTitle());
+                }
+                if (Objects.nonNull(updatedTask.getDueDate())) {
+                    task.setDueDate(updatedTask.getDueDate());
+                }
+                if (Objects.nonNull(updatedTask.getCaseworkerId())) {
+                    task.setCaseworker(caseworker);
+                }
                 taskRepository.saveAndFlush(task);
                 return task;
             })
@@ -71,7 +81,7 @@ public class TaskService {
     }
 
     public boolean deleteTask(int id) {
-        if(taskRepository.existsById(id)) {
+        if (taskRepository.existsById(id)) {
             taskRepository.deleteById(id);
             return true;
         }

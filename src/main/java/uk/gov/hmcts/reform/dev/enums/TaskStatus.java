@@ -8,8 +8,10 @@ public enum TaskStatus {
     BLOCKED;
 
     public static TaskStatus findStatus(String status) {
-        for(TaskStatus s : TaskStatus.values()) {
-            if(s.name().equalsIgnoreCase(status)) return s;
+        for (TaskStatus s : TaskStatus.values()) {
+            if (s.name().equalsIgnoreCase(status)) {
+                return s;
+            }
         }
         throw new IllegalArgumentException("Invalid task status");
     }

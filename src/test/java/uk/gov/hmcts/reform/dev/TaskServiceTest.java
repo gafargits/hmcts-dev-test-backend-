@@ -23,8 +23,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
 
 @ExtendWith(MockitoExtension.class)
 public class TaskServiceTest {
@@ -48,10 +54,23 @@ public class TaskServiceTest {
         caseworkerRepository = mock(CaseworkerRepository.class);
         taskService = new TaskService(taskRepository, caseworkerRepository);
         request = new CreateTaskRequest("Title", "Description", "TODO", LocalDate.now().plusDays(1), 1);
-        task = new Task(1, request.getTitle(), request.getDescription(), request.getStatus(), "Bob", "1", request.getDueDate(),  LocalDateTime.now() );
+        task = new Task(1,
+                        request.getTitle(),
+                        request.getDescription(),
+                        request.getStatus(),
+                        "Bob",
+                        "1",
+                        request.getDueDate(),
+                        LocalDateTime.now());
         caseworkerEntity.setId(1);
         caseworkerEntity.setName("Bob");
-        taskEntity = new TaskEntity(1, request.getTitle(), request.getDescription(),  request.getStatus(),  request.getDueDate(), LocalDateTime.now(), caseworkerEntity);
+        taskEntity = new TaskEntity(1,
+                                    request.getTitle(),
+                                    request.getDescription(),
+                                    request.getStatus(),
+                                    request.getDueDate(),
+                                    LocalDateTime.now(),
+                                    caseworkerEntity);
     }
 
     @Test
@@ -74,7 +93,11 @@ public class TaskServiceTest {
     @Test
     void shouldThrowWhenStatusIsInvalid() {
         assertThrows(IllegalArgumentException.class, () ->
-            taskService.createTask( new CreateTaskRequest("Valid Title", "Desc", "INVALID_STATUS", LocalDate.now().plusDays(1), 1))
+            taskService.createTask(new CreateTaskRequest("Valid Title",
+                                                          "Desc",
+                                                          "INVALID_STATUS",
+                                                          LocalDate.now().plusDays(1),
+                                                          1))
         );
     }
 
@@ -91,8 +114,16 @@ public class TaskServiceTest {
         when(taskRepository.findById(taskEntity.getId())).thenReturn(Optional.of(taskEntity));
         when(caseworkerRepository.findById(anyInt())).thenReturn(Optional.of(caseworkerEntity));
 
-        Task task = taskService.createTask(new CreateTaskRequest("Old Title", "Desc", "TODO", LocalDate.now().plusDays(1), 1));
-        taskService.updateTaskStatus(task.getId(), new UpdateTaskRequest("TODO", "Desc", "New Title", LocalDate.now().plusDays(1), 1));
+        Task task = taskService.createTask(new CreateTaskRequest("Old Title",
+                                                                 "Desc",
+                                                                 "TODO",
+                                                                 LocalDate.now().plusDays(1),
+                                                                 1));
+        taskService.updateTaskStatus(task.getId(), new UpdateTaskRequest("TODO",
+                                                                         "Desc",
+                                                                         "New Title",
+                                                                         LocalDate.now().plusDays(1),
+                                                                         1));
         Task updated = taskService.findTaskById(task.getId());
         assertEquals("New Title", updated.getTitle());
     }
@@ -103,7 +134,11 @@ public class TaskServiceTest {
         when(taskRepository.findById(taskEntity.getId())).thenReturn(Optional.of(taskEntity));
         when(caseworkerRepository.findById(anyInt())).thenReturn(Optional.of(caseworkerEntity));
 
-        Task task = taskService.createTask(new CreateTaskRequest("Title", "Desc", "TODO", LocalDate.now().plusDays(1), 1));
+        Task task = taskService.createTask(new CreateTaskRequest("Title",
+                                                                 "Desc",
+                                                                 "TODO",
+                                                                 LocalDate.now().plusDays(1),
+                                                                 1));
         Task found = taskService.findTaskById(task.getId());
 
         assertEquals(task.getId(), found.getId());
@@ -119,14 +154,24 @@ public class TaskServiceTest {
         when(taskRepository.save(any(TaskEntity.class))).thenReturn(taskEntity);
         when(caseworkerRepository.findById(anyInt())).thenReturn(Optional.of(caseworkerEntity));
 
-        Task task = taskService.createTask(new CreateTaskRequest("Title", "Desc", "TODO", LocalDate.now().plusDays(1), 1));
+        Task task = taskService.createTask(new CreateTaskRequest("Title",
+                                                                 "Desc",
+                                                                 "TODO",
+                                                                 LocalDate.now().plusDays(1),
+                                                                 1));
         taskService.deleteTask(task.getId());
         assertThrows(EntityNotFoundException.class, () -> taskService.findTaskById(task.getId()));
     }
 
     @Test
     void shouldListAllTasks() {
-        TaskEntity taskEntity2 = new TaskEntity(2, request.getTitle()+"2", request.getDescription()+"2", request.getStatus(), request.getDueDate(), LocalDateTime.now(), caseworkerEntity);
+        TaskEntity taskEntity2 = new TaskEntity(2,
+                                                request.getTitle() + "2",
+                                                request.getDescription() + "2",
+                                                request.getStatus(),
+                                                request.getDueDate(),
+                                                LocalDateTime.now(),
+                                                caseworkerEntity);
         when(taskRepository.save(any(TaskEntity.class))).thenReturn(taskEntity);
         when(taskRepository.findAll()).thenReturn(List.of(taskEntity, taskEntity2));
         when(caseworkerRepository.findById(anyInt())).thenReturn(Optional.of(caseworkerEntity));
@@ -143,8 +188,14 @@ public class TaskServiceTest {
         when(taskRepository.findById(taskEntity.getId())).thenReturn(Optional.of(taskEntity));
         when(caseworkerRepository.findById(anyInt())).thenReturn(Optional.of(caseworkerEntity));
 
-        Task task = taskService.createTask(new CreateTaskRequest("Task", "Desc", "TODO", LocalDate.now().plusDays(1), 1));
-        taskService.updateTaskStatus(task.getId(), new UpdateTaskRequest("COMPLETED", "Desc", "Task", LocalDate.now().plusDays(1), 1));
+        Task task = taskService
+            .createTask(new CreateTaskRequest("Task", "Desc", "TODO", LocalDate.now().plusDays(1), 1));
+        taskService.updateTaskStatus(task.getId(),
+                                     new UpdateTaskRequest("COMPLETED",
+                                                           "Desc",
+                                                           "Task",
+                                                           LocalDate.now().plusDays(1),
+                                                           1));
         Task updated = taskService.findTaskById(task.getId());
         assertEquals("COMPLETED", updated.getStatus());
     }

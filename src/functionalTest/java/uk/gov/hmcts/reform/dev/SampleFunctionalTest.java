@@ -3,12 +3,17 @@ package uk.gov.hmcts.reform.dev;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Order;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -71,12 +76,13 @@ class SampleFunctionalTest {
     @Order(4)
     void testUpdateTask() {
         String jsonBody = """
-        {
-          "title": "Updated Task Title",
-          "status": "IN_PROGRESS",
-          "caseworkerId": 2
-        }
-        """;
+            {
+              "title": "Updated Task Title",
+              "status": "IN_PROGRESS",
+              "caseworkerId": 2
+            }
+            """;
+
 
         given()
             .contentType(ContentType.JSON)
