@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.dev.models.CreateTaskRequest;
 import uk.gov.hmcts.reform.dev.models.Task;
 import uk.gov.hmcts.reform.dev.models.UpdateTaskRequest;
+import uk.gov.hmcts.reform.dev.service.CaseworkerService;
 import uk.gov.hmcts.reform.dev.service.TaskService;
 
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest
-class GetWelcomeTest {
+class TaskControllerUnitTest {
 
     @Autowired
     private transient MockMvc mockMvc;
@@ -34,6 +35,9 @@ class GetWelcomeTest {
     @MockBean
     @SuppressWarnings("removal")
     private TaskService taskService;
+    @MockBean
+    private CaseworkerService caseworkerService;
+
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -42,7 +46,7 @@ class GetWelcomeTest {
 
     @BeforeEach
     void setup() {
-        sampleTask = new Task(1, "Test Task", "Desc", "TODO", LocalDate.now().plusDays(1), LocalDateTime.now());
+        sampleTask = new Task(1, "Test Task", "Desc", "TODO", "Bob", "1", LocalDate.now().plusDays(1), LocalDateTime.now());
     }
 
     @DisplayName("Should welcome upon root request with 200 response code")
@@ -55,7 +59,7 @@ class GetWelcomeTest {
 
     @Test
     void shouldCreateTask() throws Exception {
-        CreateTaskRequest req = new CreateTaskRequest("Test Task", "Desc", "TODO", LocalDate.now().plusDays(1));
+        CreateTaskRequest req = new CreateTaskRequest("Test Task", "Desc", "TODO",   LocalDate.now().plusDays(1), 1);
         when(taskService.createTask(any(CreateTaskRequest.class))).thenReturn(sampleTask);
 
         mockMvc.perform(post("/task")
@@ -78,8 +82,8 @@ class GetWelcomeTest {
 
     @Test
     void shouldUpdateTask() throws Exception {
-        UpdateTaskRequest updateRequest = new UpdateTaskRequest("COMPLETED", "Updated Desc", "Updated Title", LocalDate.now().plusDays(2));
-        Task updated = new Task(1, "Updated Title", "Updated Desc", "COMPLETED", updateRequest.getDueDate(), LocalDateTime.now());
+        UpdateTaskRequest updateRequest = new UpdateTaskRequest("COMPLETED", "Updated Desc", "Updated Title", LocalDate.now().plusDays(2), 1);
+        Task updated = new Task(1, "Updated Title", "Updated Desc", "COMPLETED", "Bob", "1", updateRequest.getDueDate(), LocalDateTime.now());
 
         when(taskService.updateTaskStatus(eq(1), any(UpdateTaskRequest.class))).thenReturn(updated);
 

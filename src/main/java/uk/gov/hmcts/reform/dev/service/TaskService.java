@@ -97,7 +97,8 @@ public class TaskService {
         task.setStatus(entity.getStatus().toUpperCase());
         task.setDueDate(entity.getDueDate());
         task.setDateCreated(entity.getDateCreated());
-        task.setCaseWorker(entity.getCaseworker().getName());
+        task.setCaseworker(entity.getCaseworker().getName());
+        task.setCaseworkerId(entity.getCaseworker().getId().toString());
 
         return task;
     }

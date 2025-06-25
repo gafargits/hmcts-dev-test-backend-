@@ -48,7 +48,7 @@ public class TaskServiceTest {
         caseworkerRepository = mock(CaseworkerRepository.class);
         taskService = new TaskService(taskRepository, caseworkerRepository);
         request = new CreateTaskRequest("Title", "Description", "TODO", LocalDate.now().plusDays(1), 1);
-        task = new Task(1, request.getTitle(), request.getDescription(), request.getStatus(), "Bob", request.getDueDate(),  LocalDateTime.now() );
+        task = new Task(1, request.getTitle(), request.getDescription(), request.getStatus(), "Bob", "1", request.getDueDate(),  LocalDateTime.now() );
         caseworkerEntity.setId(1);
         caseworkerEntity.setName("Bob");
         taskEntity = new TaskEntity(1, request.getTitle(), request.getDescription(),  request.getStatus(),  request.getDueDate(), LocalDateTime.now(), caseworkerEntity);
