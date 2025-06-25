@@ -4,19 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import uk.gov.hmcts.reform.dev.models.CreateTaskRequest;
 import uk.gov.hmcts.reform.dev.models.Task;
 import uk.gov.hmcts.reform.dev.models.UpdateTaskRequest;
-import uk.gov.hmcts.reform.dev.service.CaseworkerService;
 import uk.gov.hmcts.reform.dev.service.TaskService;
 
 import java.time.LocalDate;
@@ -34,29 +30,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TaskController.class)
-@Import(TaskControllerTest.Config.class)
+@WebMvcTest({TaskController.class, RootController.class})
+//@Import(TaskControllerTest.Config.class)
 class TaskControllerTest {
     @Autowired
     private transient MockMvc mockMvc;
 
-    @Configuration
-    static class Config {
-        @Bean
-        TaskService taskService() {
-            return Mockito.mock(TaskService.class);
-        }
+    @MockBean
+    TaskService taskService;
 
-        @Bean
-        CaseworkerService caseworkerService() {
-            return Mockito.mock(CaseworkerService.class);
-        }
-    }
-
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private CaseworkerService caseworkerService;
     @Autowired
     private ObjectMapper objectMapper;
     private Task sampleTask;
